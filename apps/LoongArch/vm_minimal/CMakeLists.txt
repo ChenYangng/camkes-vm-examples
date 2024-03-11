@@ -13,8 +13,10 @@ include(${CAMKES_LOONGARCH_VM_HELPERS_PATH})
 if("${KernelLoongarchPlatform}" STREQUAL "3A5000")
     set(cpp_flags "-DKERNELLoongarchPLATFORM_3A5000")
 
+    AddToFileServer("bios" "${CAMKES_VM_IMAGES_DIR}/3A5000/loongarch_bios_0310_debug.bin")
     AddToFileServer("linux" "${CAMKES_VM_IMAGES_DIR}/3A5000/linux")
-    # AddToFileServer("linux-dtb" "${CAMKES_VM_IMAGES_DIR}/3A5000/linux-dtb")
+    AddToFileServer("linux-dtb" "${CAMKES_VM_IMAGES_DIR}/3A5000/linux-dtb")
+    AddToFileServer("linux-initrd" "${CAMKES_VM_IMAGES_DIR}/3A5000/linux-initrd")
 endif()
 
 # Create our CPP Flags based on ARM VM config variables
