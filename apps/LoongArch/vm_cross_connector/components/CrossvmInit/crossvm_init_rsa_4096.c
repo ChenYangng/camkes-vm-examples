@@ -59,27 +59,27 @@ int run(void)
 
     while (1) {
         // encrypt
-        for (int j = 0; j < r; ++j) {
+        for (int j = 0; j < 2; ++j) {
             ready_wait();
             
             // public key encrypt
             // rsa_public_encrypt(output, &outputLen, input, inputLen, &pk);
 
             // private key encrypt
-            rsa_private_encrypt(msg, &msg_len, output, outputLen, &sk);
+            rsa_private_encrypt(output, &outputLen, input, inputLen, &sk);
 
             done_emit_underlying();
         }
 
         // decrypt
-        for (int j = 0; j < r; ++j) {
+        for (int j = 0; j < 2; ++j) {
             ready_wait();
             
             // public key encrypt
             // rsa_private_decrypt(msg, &msg_len, output, outputLen, &sk);
 
             // public key decrypt
-            rsa_public_decrypt(output, &outputLen, input, inputLen, &pk);
+            rsa_public_decrypt(msg, &msg_len, output, outputLen, &pk);
 
             done_emit_underlying();
         }

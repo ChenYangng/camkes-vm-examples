@@ -7,21 +7,22 @@
 #include <string.h>
 #include <camkes.h>
 
-#include "rsa/rsa.h"
-#include "rsa/keys2048.h"
+#include "rsa2048/rsa.h"
+#include "rsa2048/keys.h"
 
-int r = 10010;
+int r = 1010;
 
 rsa_pk_t pk = {0};
 rsa_sk_t sk = {0};
-uint8_t output[256];
 
 // message to encrypt
-uint8_t input [256] = { 0x21,0x55,0x53,0x53,0x53,0x53};
+uint8_t plaintext[256] = { 0x21,0x55,0x53,0x53,0x53,0x53};
+uint8_t ciphertext[256];
+uint8_t msg[256];
 
-unsigned char msg [256];
-uint32_t outputLen, msg_len;
-uint8_t  inputLen;
+uint32_t plaintextLen = 245;
+uint32_t ciphertextLen;
+uint32_t msgLen;
 
 /*
  * RSA2048 encrypt and decrypt
@@ -43,8 +44,6 @@ static int RSA2048(void){
     memcpy(&sk.prime_exponent2 [RSA_MAX_PRIME_LEN - sizeof(key_e2)],  key_e2, sizeof(key_e2));
     memcpy(&sk.coefficient     [RSA_MAX_PRIME_LEN - sizeof(key_c) ],  key_c,  sizeof(key_c ));
 
-    inputLen = strlen((const char*)input);
-
     return 0;
 }
 
@@ -62,11 +61,12 @@ int run(void)
         for (int j = 0; j < r; ++j) {
             ready_wait();
             
+            memcpy(plaintext, src, plaintextLen);
             // public key encrypt
-            // rsa_public_encrypt(output, &outputLen, input, inputLen, &pk);
+            rsa_private_encrypt(ciphertext, &ciphertextLen, plaintext, plaintextLen, &sk);
+            // rsa_public_encrypt(ciphertext, &ciphertextLen, plaintext, plaintextLen, &pk);
 
-            // private key encrypt
-            rsa_private_encrypt(msg, &msg_len, output, outputLen, &sk);
+            memcpy(dest, ciphertext, ciphertextLen);
 
             done_emit_underlying();
         }
@@ -75,11 +75,12 @@ int run(void)
         for (int j = 0; j < r; ++j) {
             ready_wait();
             
+            memcpy(plaintext, src, 256);
             // public key encrypt
-            // rsa_private_decrypt(msg, &msg_len, output, outputLen, &sk);
+            rsa_public_decrypt(msg, &msgLen, ciphertext, ciphertextLen, &pk);
+            // rsa_private_decrypt(msg, &msgLen, ciphertext, ciphertextLen, &sk);
 
-            // public key decrypt
-            rsa_public_decrypt(output, &outputLen, input, inputLen, &pk);
+            memcpy(dest, msg, msgLen);
 
             done_emit_underlying();
         }

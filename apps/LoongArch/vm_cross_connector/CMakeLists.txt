@@ -253,16 +253,39 @@ CAmkESAddImportPath(${KernelLoongarchPlatform})
 DeclareCAmkESComponent(VM SOURCES src/cross_vm_connections.c)
 
 # Define our demo component that shares a dataport with the VM
-# DeclareCAmkESComponent(CrossvmInit SOURCES components/CrossvmInit/crossvm_init.c components/CrossvmInit/aes/aes_cbc.c)
-# DeclareCAmkESComponent(CrossvmInit SOURCES components/CrossvmInit/crossvm_init_rsa.c INCLUDES /home/cy/openssl/include /home/cy/openssl/build/include LIBS /home/cy/openssl/build/libcrypto.a)
+DeclareCAmkESComponent(CrossvmInit SOURCES components/CrossvmInit/crossvm_init.c)
+
+# add_library(tommath STATIC IMPORTED)
+# set_target_properties(tommath PROPERTIES
+#     IMPORTED_LOCATION "/home/cy/la_libtom/libtommath.a")
+#
+# add_library(tomcrypt STATIC IMPORTED)
+# set_target_properties(tomcrypt PROPERTIES
+#     IMPORTED_LOCATION "/home/cy/la_libtom/libtomcrypt.a")
+
+# AES
+# file(GLOB MY_SOURCES "components/CrossvmInit/aes/*.c")
+# DeclareCAmkESComponent(CrossvmInit SOURCES ${MY_SOURCES} components/CrossvmInit/crossvm_init_aes.c)
+# DeclareCAmkESComponent(CrossvmInit SOURCES ${MY_SOURCES} components/CrossvmInit/crossvm_init.c)
 
 # RSA1024
-file(GLOB MY_SOURCES "components/CrossvmInit/rsa1024/*.c")
-DeclareCAmkESComponent(CrossvmInit SOURCES ${MY_SOURCES} components/CrossvmInit/crossvm_init_rsa_1024.c)
+# file(GLOB MY_SOURCES "components/CrossvmInit/rsa1024/*.c")
+# DeclareCAmkESComponent(CrossvmInit SOURCES ${MY_SOURCES} components/CrossvmInit/crossvm_init_rsa_1024.c)
+
+# RSA2048
+# file(GLOB MY_SOURCES "components/CrossvmInit/rsa2048/*.c")
+# DeclareCAmkESComponent(CrossvmInit SOURCES ${MY_SOURCES} components/CrossvmInit/crossvm_init_rsa_2048.c)
 
 # RSA4096
 # file(GLOB MY_SOURCES "components/CrossvmInit/rsa4096/*.c")
 # DeclareCAmkESComponent(CrossvmInit SOURCES ${MY_SOURCES} components/CrossvmInit/crossvm_init_rsa_4096.c)
+# DeclareCAmkESComponent(CrossvmInit 
+#     SOURCES ${MY_SOURCES} components/CrossvmInit/crossvm_libtom_rsa2048.c 
+#     LIBS tomcrypt tommath
+#     INCLUDES /home/cy/libtomcrypt/src/headers/
+#     C_FLAGS -DLTM_DESC
+#     LD_FLAGS -L/home/cy/la_libtom/
+# )
 
 # SHA256
 # file(GLOB MY_SOURCES "components/CrossvmInit/sha256/*.c")
